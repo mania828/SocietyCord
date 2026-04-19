@@ -1,12 +1,12 @@
 from fastapi import FastAPI, WebSocket
-import asyncio
-import time
+
 app = FastAPI()
+
 clients = set()
 
 @app.get("/")
 def home():
-    return {"status": "online"}
+    return {"status": "SocietyCord online"}
 
 @app.websocket("/ws")
 async def ws(websocket: WebSocket):
@@ -17,18 +17,12 @@ async def ws(websocket: WebSocket):
         while True:
             msg = await websocket.receive_text()
 
+            # broadcast to everyone
             for c in list(clients):
                 try:
                     await c.send_text(msg)
                 except:
                     clients.discard(c)
 
-    except Exception as e:
-        print("WebSocket error:", e)
-
-    finally:
+    except:
         clients.discard(websocket)
-
-@app.get("/ping")
-def ping():
-    return {"time": time.time()}
