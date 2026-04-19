@@ -1,6 +1,7 @@
 from fastapi import FastAPI, WebSocket
 
 app = FastAPI()
+
 clients = set()
 
 @app.get("/")
@@ -15,10 +16,12 @@ async def ws(websocket: WebSocket):
     try:
         while True:
             msg = await websocket.receive_text()
+
             for c in list(clients):
                 try:
                     await c.send_text(msg)
                 except:
                     clients.discard(c)
+
     except:
         clients.discard(websocket)
