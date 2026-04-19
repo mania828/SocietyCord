@@ -17,7 +17,6 @@ async def ws(websocket: WebSocket):
         while True:
             msg = await websocket.receive_text()
 
-            # broadcast to everyone
             for c in list(clients):
                 try:
                     await c.send_text(msg)
